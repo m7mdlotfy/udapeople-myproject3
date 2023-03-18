@@ -106,7 +106,6 @@ jobs:
           name: Scan front-end
           command: |
             cd frontend
-#           exit 0
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
