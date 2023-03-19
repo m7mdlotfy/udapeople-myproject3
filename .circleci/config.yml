@@ -173,7 +173,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt add ansible gzip openssh-client
+            sudo apt -y install ansible gzip openssh-client
       - run:
           name: Configure server
           command: |
