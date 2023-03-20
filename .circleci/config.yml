@@ -186,6 +186,8 @@ jobs:
       - image: mohamedlotfy/aws-nodejs
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["0e:d9:d8:0a:3f:5f:e7:a4:d0:00:83:a5:fb:39:f8:50"]
       - run:
           name: Run migrations
           command: |
