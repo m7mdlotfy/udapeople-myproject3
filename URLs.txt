@@ -1,2 +1,2 @@
-1. [URL01] Public Url to GitHub repository:
+[URL01] Public Url to GitHub repository:
     https://github.com/m7mdlotfy/udapeople-myproject3

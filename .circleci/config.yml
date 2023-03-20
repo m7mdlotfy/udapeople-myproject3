@@ -129,19 +129,19 @@ jobs:
   #           npm audit fix --audit-level=critical --force
   #           npm audit --audit-level=critical
 
-  # deploy-infrastructure:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           yum install -y tar gzip
-  #     - run:
-  #         name: Ensure back-end infrastructure exists
-  #         command: |
-  #           aws cloudformation deploy --template-file .circleci/files/backend.yml --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  --tags project=udapeople
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy --template-file .circleci/files/backend.yml --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  --tags project=udapeople
 #       - run:
 #           name: Ensure front-end infrastructure exist
 #           command: |
@@ -151,15 +151,15 @@ jobs:
 #               # --stack-name "your front-end stack name with workflow id" \
 #               # --parameter-overrides ID="your workflow id"  
 #               exit 1
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> .circleci/ansible/inventory.txt
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
-      # - destroy-environment      
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy-environment      
 
   configure-infrastructure:
     docker:
@@ -168,8 +168,8 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["0e:d9:d8:0a:3f:5f:e7:a4:d0:00:83:a5:fb:39:f8:50"]
-      # - attach_workspace:
-      #     at: ~/    
+      - attach_workspace:
+          at: ~/    
       - run:
           name: Install dependencies
           command: |
@@ -181,21 +181,24 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure      
 
-#   run-migrations:
-#     docker:
-#       # Docker image here that supports NodeJS
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Run migrations
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Send migration results to memstash
-#           command: |
-#             # Your code here
-#             exit 1
+  run-migrations:
+    docker:
+      # Docker image here that supports NodeJS
+    steps:
+      - checkout
+      - run:
+          name: Run migrations
+          command: |
+            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            cd backend
+            npm install
+            npm run premigrations
+            npm run migrations
+      # - run:
+      #     name: Send migration results to memstash
+      #     command: |
+      #       # Your code here
+      #       exit 1
 #      # Here's where you will add some code to rollback on failure      
 
 #   deploy-frontend:
@@ -307,15 +310,15 @@ workflows:
       #      requires: [build-backend]
       # - scan-frontend:
       #      requires: [build-frontend]
-      # - deploy-infrastructure
+      - deploy-infrastructure
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
       #       branches:
       #         only: [test-feature-branch]
-      - configure-infrastructure
-          # requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
