@@ -183,7 +183,7 @@ jobs:
 
   run-migrations:
     docker:
-      # Docker image here that supports NodeJS
+      - image: mohamedlotfy/aws-nodejs
     steps:
       - checkout
       - run:
