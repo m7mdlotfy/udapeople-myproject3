@@ -46,7 +46,7 @@
     cmd: "usermod -aG docker ubuntu"
     chdir: .
 
-- service: name=docker state=restarted
+# - service: name=docker state=restarted
 #
 
 
