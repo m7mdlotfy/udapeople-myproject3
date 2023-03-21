@@ -1,9 +1,9 @@
 ---
-- name: "upgrade packages."
-  become: true
-  apt:
-    update: "yes"
-    upgrade: "yes"
+# - name: "upgrade packages."
+#   become: true
+#   apt:
+#     update: "yes"
+#     upgrade: "yes"
 
 - name: "install dependencies."
   become: true
