@@ -196,7 +196,6 @@ jobs:
             echo $TYPEORM_USERNAME
             cd backend
             npm install
-            npm audit fix --force --audit-level=critical
             npm run premigrations
             npm run migrations
       # - run:
