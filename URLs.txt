@@ -1,2 +1,7 @@
-[URL01] Public Url to GitHub repository:
-    https://github.com/m7mdlotfy/udapeople-myproject3
+[URL01]
+https://github.com/m7mdlotfy/udapeople-myproject3
+
+
+[URL02]
+http://udapeople-789bbc4.s3-website-us-east-1.amazonaws.com/#/employees
+
